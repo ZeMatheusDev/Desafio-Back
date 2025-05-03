@@ -1,0 +1,14 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    background-image: url('/home.jpg');               
+    align-items: center;
+}
+.custom-card {
+    max-width: 500px;
+    margin: 0 auto;
+    border-radius: 15px;
+}
+.toast-body{
+    background-color: white;
+}

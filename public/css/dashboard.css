@@ -1,0 +1,41 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-image: url('/dash.jpg');               
+    background-size: cover; 
+    background-position: center;
+    color: #000000 !important;
+}
+#menuSide {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 280px;
+    background: rgba(110, 135, 156, 0.5);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    padding: 20px;
+    color: black !important;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.5);
+}
+#menuSide:hover {
+    width: 320px;
+}
+.main-content {
+    margin-left: 300px;
+    padding: 20px;
+}
+a{
+    color: black !important;
+}
+a:hover{
+    color: rgb(97, 97, 97) !important;
+}
+#exit:hover{
+    color: rgb(97, 97, 97) !important;
+}
+#exit{
+    color: black !important;
+    margin-top: 100px !important;
+}
