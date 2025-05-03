@@ -22,7 +22,8 @@ Route::middleware('guest.custom')->group(function () {
     Route::get('/createAccount', [HomeController::class, 'create'])->name('account.create');
     Route::post('/createAccount', [HomeController::class, 'store'])->name('account.store');
     Route::post('/login', [HomeController::class, 'login'])->name('login');
-    Route::post('/senha', [HomeController::class, 'senha'])->name('senha');
+    Route::get('/senha', [HomeController::class, 'senha'])->name('senha');
+    Route::post('/senha', [HomeController::class, 'senhaStore'])->name('senha.store');
 });
 
 Route::middleware('logged.custom')->group(function () {

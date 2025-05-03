@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SenhaMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -79,4 +82,40 @@ class HomeController extends Controller
 
         return redirect()->back();
     }
+
+    public function senha(){
+        return view('home/senha');
+    }
+
+    public function senhaStore(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => ['required','email'],
+        ],[
+            'email.required' => 'O campo e‑mail é obrigatório.',
+            'email.email'    => 'O e‑mail informado não é válido.',
+        ]);
+    
+        $user = User::where('email', $validated['email'])
+                    ->where('deleted', 0)
+                    ->first();
+    
+        if (! $user) {
+            return back()
+                   ->withErrors(['email' => 'E‑mail não cadastrado.'])
+                   ->withInput();
+        }
+    
+        $plain = Str::random(8);
+    
+        $user->password = Hash::make($plain);
+        $user->save();
+    
+        Mail::to($user->email)->send(new SenhaMail($plain));
+    
+        return redirect()
+               ->route('home')
+               ->with('success', 'Uma nova senha foi enviada para seu e‑mail.');
+    }
+    
 }

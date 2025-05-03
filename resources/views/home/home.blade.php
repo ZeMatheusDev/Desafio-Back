@@ -58,6 +58,10 @@
                     <a href="/createAccount" class="link-light text-decoration-none">
                         Criar nova conta
                     </a>  
+                    <br>
+                    <a href="{{ route('senha') }}" class="link-light text-decoration-none mt-2 d-block">
+                        Esqueci minha senha
+                    </a>
                 </div>
             </form>
         </div>
