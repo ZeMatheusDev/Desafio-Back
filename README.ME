@@ -1,0 +1,39 @@
+Sistema criado pelo ZeMatheusDev 
+
+Para rodar o sistema basta primeiramente rodar os seguintes comandos
+
+    composer install
+    npm install
+
+após isso configurar o .env
+
+    php artisan key:generate
+    
+    configurar o seu banco de dados para acesso mysql
+
+
+    como eu utilizei o artisan serve utilizei o filamento database
+                   \/ 
+            BROADCAST_DRIVER=log
+            CACHE_DRIVER=file
+            FILESYSTEM_DISK=local
+            QUEUE_CONNECTION=database
+            SESSION_DRIVER=file
+            SESSION_LIFETIME=120
+
+após isso migrar as tabelas criadas nas migrations
+
+    php artisan migrate
+
+    php artisan queue:table
+
+Logo após, rodar o sistema 
+
+    php artisan serve
+
+e agora você pode utilizar o sistema a vontade
+
+podendo utilizar comandos como php artisan products:import
+ou especifico 
+php artisan products:import --id=5
+
