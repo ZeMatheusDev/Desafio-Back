@@ -65,10 +65,9 @@ class HomeController extends Controller
                 ->first();
 
         if (!$user || !Hash::check($validated['senha'], $user->password)) {
-            return response()->json([
-                'errors' => ['error' => ['Credenciais inválidas']],
-                'message' => 'Verifique os erros no formulário'
-            ], 422);
+            return back()
+                ->withErrors(['error' => 'Credenciais inválidas'])
+                ->withInput();
         }
 
         Auth::login($user);

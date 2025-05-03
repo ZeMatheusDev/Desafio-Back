@@ -23,6 +23,19 @@
             </div>
         </div>
     @endif
+    @if($errors->has('error'))
+        <div style="margin: 0 auto; display:flex; width: 250px">
+            <div role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-danger text-white">
+                    <strong class="me-auto">Erro!</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">
+                    {{ $errors->first('error') }}
+                </div>
+            </div>
+        </div>
+    @endif
     <div id="menuSide" class="text-white">
         <div class="container">
             <h2 class="mb-4">Login</h2>
