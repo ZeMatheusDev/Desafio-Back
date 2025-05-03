@@ -55,7 +55,8 @@ class ProductAPIRepository
     private function getOrCreateCategory(string $categoryName): int
     {
         return Categorie::firstOrCreate(
-            ['name' => ucwords(strtolower(trim($categoryName)))]
+            ['name' => ucwords(strtolower(trim($categoryName)))],
+            ['deleted' => 0] 
         )->id;
     }
 
