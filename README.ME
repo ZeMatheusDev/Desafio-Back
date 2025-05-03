@@ -9,7 +9,7 @@ após isso configurar o .env
 
     php artisan key:generate
     
-configurar o seu banco de dados para acesso mysql
+    configurar o seu banco de dados para acesso mysql
 
     como eu utilizei o artisan serve utilizei o filamento database
                    \/ 
@@ -19,6 +19,17 @@ configurar o seu banco de dados para acesso mysql
             QUEUE_CONNECTION=database
             SESSION_DRIVER=file
             SESSION_LIFETIME=120
+
+    configurar seu mail para o envio de email no recuperar senha
+
+    MAIL_MAILER=smtp
+    MAIL_HOST=smtp.gmail.com
+    MAIL_PORT=587
+    MAIL_USERNAME=USERNAME
+    MAIL_PASSWORD=PASSWORD
+    MAIL_ENCRYPTION=tls
+    MAIL_FROM_ADDRESS=USER
+    MAIL_FROM_NAME="${APP_NAME}"
 
 após isso migrar as tabelas criadas nas migrations
 
