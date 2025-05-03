@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categorie;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class CategorieController extends Controller
@@ -11,7 +12,7 @@ class CategorieController extends Controller
         $categories = Categorie::where('deleted', 0);
         if($request->method() == 'POST'){
             if($request->name != ''){
-                $categories->where('name', $request->name);
+                $categories->where('name', 'LIKE', '%' . $request->name . '%');
             }
         }
         $categories = $categories->get();
@@ -37,6 +38,8 @@ class CategorieController extends Controller
 
     public function delete(Request $request){
         Categorie::where('id', $request->id)->update(['deleted' => 1]);
+
+        Product::where('category_id', $request->id)->update(['deleted' => 1]);
 
         return redirect()->route('categorie.list')->with('success', 'Categoria deletada com sucesso!');
     }

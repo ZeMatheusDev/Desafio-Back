@@ -22,7 +22,11 @@ class ProductController extends Controller
                 'image_url',
                 'categories.name as category_name'
             ]);
-    
+
+        if ($request->has('id') && $request->id != '') {
+            $products->where('products.id', 'LIKE', '%' . $request->id . '%');
+        }
+
         if ($request->has('name') && $request->name != '') {
             $products->where('products.name', 'LIKE', '%' . $request->name . '%');
         }
@@ -33,6 +37,14 @@ class ProductController extends Controller
     
         if ($request->has('description') && $request->description != '') {
             $products->where('description', 'LIKE', '%' . $request->description . '%');
+        }
+
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $products->where(function($query) use ($searchTerm) {
+                $query->where('products.name', 'LIKE', "%{$searchTerm}%")
+                      ->orWhere('categories.name', 'LIKE', "%{$searchTerm}%");
+            });
         }
     
         if ($request->has('category') && $request->category != '') {
@@ -48,11 +60,15 @@ class ProductController extends Controller
         }
     
         $products = $products->get()->map(function ($product) {
-            $product->image_url = str_replace('/', '-', $product->image_url);
+            if (!str_starts_with($product->image_url, 'http')) {
+                $product->image_url = str_replace('/', '-', $product->image_url);
+            }
             return $product;
         });
 
-        return view('product.list')->with('products', $products);
+        $categorias = Categorie::where('deleted', 0)->get();
+
+        return view('product.list', ['products' => $products, 'categorias' => $categorias]);
     }
 
     public function create(){

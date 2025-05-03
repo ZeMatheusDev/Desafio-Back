@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ImportProductJob;
+use App\Models\Product;
 use App\Models\User;
+use App\Services\FakeStoreAPIService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -52,5 +55,85 @@ class DashboardController extends Controller
         $user->update($updateData);
     
         return redirect()->route('dashboard')->with('success', 'Perfil atualizado com sucesso!');
+    }
+
+    public function import(){
+        $fakeStoreApi = new FakeStoreAPIService;
+        $apiProducts = $fakeStoreApi->getProducts();
+        
+        $existingProducts = Product::where('deleted', 0)
+        ->get(['name', 'description', 'price', 'image_url']);
+                
+        $filteredProducts = array_filter($apiProducts, function ($apiProduct) use ($existingProducts) {
+            $processedData = [
+                'name' => trim(preg_replace('/\s+/', ' ', $apiProduct['title'])),
+                'price' => round(floatval($apiProduct['price']), 2),
+                'description' => strip_tags($apiProduct['description']),
+                'image_url' => filter_var($apiProduct['image'], FILTER_VALIDATE_URL) ? $apiProduct['image'] : null
+            ];
+            
+            foreach ($existingProducts as $existing) {
+                if (
+                    $existing->name === $processedData['name'] &&
+                    $existing->description === $processedData['description'] &&
+                    $existing->price == $processedData['price'] && 
+                    $existing->image_url === $processedData['image_url']
+                ) {
+                    return false; 
+                }
+            }
+            return true; 
+        });
+        return view('dashboard/import', ['products' => $filteredProducts]);
+    }
+
+    public function importStore(Request $request){
+        $import = new ImportProductJob($request->id);
+        $repository = app(\App\Repositories\ProductAPIRepository::class);
+        $service = app(FakeStoreAPIService::class);
+        $import->handle($service, $repository);
+        return redirect()->back()->with('success', 'Produto importado com sucesso!');
+    }
+
+    public function importAll(Request $request){
+        $fakeStoreApi = new FakeStoreAPIService;
+        $apiProducts = $fakeStoreApi->getProducts();
+        
+        $existingProducts = Product::where('deleted', 0)
+        ->get(['name', 'description', 'price', 'image_url']);
+        
+        $filteredProducts = array_filter($apiProducts, function ($apiProduct) use ($existingProducts) {
+            $processedData = [
+                'name' => trim(preg_replace('/\s+/', ' ', $apiProduct['title'])),
+                'price' => round(floatval($apiProduct['price']), 2),
+                'description' => strip_tags($apiProduct['description']),
+                'image_url' => filter_var($apiProduct['image'], FILTER_VALIDATE_URL) ? $apiProduct['image'] : null
+            ];
+            
+            foreach ($existingProducts as $existing) {
+                if (
+                    $existing->name === $processedData['name'] &&
+                    $existing->description === $processedData['description'] &&
+                    $existing->price == $processedData['price'] && 
+                    $existing->image_url === $processedData['image_url']
+                ) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    
+        foreach ($filteredProducts as $product) {
+            $importProductJob = new ImportProductJob($product['id']);
+            $repository = app(\App\Repositories\ProductAPIRepository::class);
+            $service = app(FakeStoreAPIService::class);
+            $importProductJob->handle($service, $repository);
+            ImportProductJob::dispatch($product['id']); 
+        }
+    
+        return redirect()->back()->with(
+            'success', 
+            count($filteredProducts) . ' produtos foram enfileirados para importação!'
+        );
     }
 }

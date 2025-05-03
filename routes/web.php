@@ -22,12 +22,16 @@ Route::middleware('guest.custom')->group(function () {
     Route::get('/createAccount', [HomeController::class, 'create'])->name('account.create');
     Route::post('/createAccount', [HomeController::class, 'store'])->name('account.store');
     Route::post('/login', [HomeController::class, 'login'])->name('login');
+    Route::post('/senha', [HomeController::class, 'senha'])->name('senha');
 });
 
 Route::middleware('logged.custom')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/perfil', [DashboardController::class, 'perfil'])->name('perfil');
     Route::post('/perfil', [DashboardController::class, 'update'])->name('perfil.update');
+    Route::get('/import', [DashboardController::class, 'import'])->name('import');
+    Route::post('/import', [DashboardController::class, 'importStore'])->name('import.store');
+    Route::post('/importAll', [DashboardController::class, 'importAll'])->name('importAll.store');
     
     Route::get('/product/list', [ProductController::class, 'index'])->name('product.list');
     Route::post('/product/list', [ProductController::class, 'index'])->name('productP.list');

@@ -34,6 +34,9 @@
                 <a href="/categorie/list" class="nav-link mb-3">
                     Categoria
                 </a>
+                
+                <a href="/import" class="nav-link mb-3">Importar</a>
+            
 
                 <a href="/perfil" class="nav-link">
                     Perfil
@@ -60,10 +63,34 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <input type="text" 
-                                name="name" 
+                                name="id" 
                                 class="form-control" 
-                                placeholder="Filtrar por nome"
-                                value="{{ request()->input('name') }}">
+                                placeholder="Buscar por ID"
+                                value="{{ request()->input('id') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <input type="text" 
+                                name="search" 
+                                class="form-control" 
+                                placeholder="Buscar por nome ou categoria"
+                                value="{{ request()->input('search') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <select name="category" class="form-control">
+                                <option value="">Todas as Categorias</option>
+                                @foreach($categorias as $categoria)
+                                    <option value="{{ $categoria->name }}" 
+                                        {{ request()->input('category') == $categoria->name ? 'selected' : '' }}>
+                                        {{ $categoria->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     
@@ -85,16 +112,6 @@
                                 class="form-control" 
                                 placeholder="Descrição contém"
                                 value="{{ request()->input('description') }}">
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <input type="text" 
-                                name="category" 
-                                class="form-control" 
-                                placeholder="Categoria"
-                                value="{{ request()->input('category') }}">
                         </div>
                     </div>
 
@@ -138,8 +155,22 @@
                         <td>R$ {{ number_format($product->price, 2, ',', '.') }}</td>
                         <td>{{ Str::limit($product->description, 50) }}</td>
                         <td>{{ $product->category_name }}</td>
-                        <td>@if($product->image_url)<a href="{{ route('visualizar.files', ['path' => $product->image_url]) }}">Visualizar</a>@endif</td>                 
                         <td>
+                            @if($product->image_url)
+                                @if(str_starts_with($product->image_url, 'http'))
+                                    <a href="{{ $product->image_url }}" target="_blank" class="btn btn-sm btn-info">
+                                        Ver Imagem Externa
+                                    </a>
+                                @else
+                                    <a href="{{ route('visualizar.files', ['path' => $product->image_url]) }}" 
+                                       class="btn btn-sm btn-primary">
+                                        Visualizar Local
+                                    </a>
+                                @endif
+                            @else
+                                <span class="text-muted">Nenhuma imagem</span>
+                            @endif
+                        </td>                        <td>
                             <a href="/product/edit/{{$product->id}}" class="btn btn-sm btn-warning">Editar</a>
                             <form action="{{route('product.delete')}}" method="POST" style="display: inline-block;">
                                 @csrf

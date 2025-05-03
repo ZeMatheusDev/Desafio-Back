@@ -35,6 +35,10 @@
                 <a href="/categorie/list" class="nav-link mb-3">
                     Categoria
                 </a>
+
+                <a href="/import" class="nav-link mb-3">
+                    Importar
+                </a>
                 
                 <a href="/perfil" class="nav-link">
                     Perfil

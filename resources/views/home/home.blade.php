@@ -57,7 +57,7 @@
                 <div class="text-center">
                     <a href="/createAccount" class="link-light text-decoration-none">
                         Criar nova conta
-                    </a>
+                    </a>  
                 </div>
             </form>
         </div>
